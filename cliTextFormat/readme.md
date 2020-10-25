@@ -18,3 +18,9 @@ I used `Visual Studio 2019` (msvc) on Windows and the build-essential package (`
 |`SGR_BLINK_SLOW`|✓|✓|✕|
 
 > On up to date systems in Oct. 2020
+
+## Example
+
+The difference from normal to bold isn't obvious on Manjaro. I think I saw it on my screen, aldought it is not visible on the image.
+
+![](./img0.png)
