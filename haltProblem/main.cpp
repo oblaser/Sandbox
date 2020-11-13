@@ -23,6 +23,7 @@ static unsigned int collatzQuiet(unsigned int n);
 static void printHelp();
 static void interactiveLoop();
 static int analyzer(int max);
+static int matlab(int max);
 
 using namespace std;
 
@@ -42,6 +43,18 @@ int main(int argc, char** argv)
             int tmpMax = atoi(*(argv + 2));
             
             if(tmpMax > 1) result = analyzer(tmpMax);
+            else
+            {
+                cout << "Invalid MAXIN argument: " << *(argv + 2) << " => " << tmpMax << endl;
+                result = 1;
+            }
+        }
+        
+        else if((string(*(argv + 1)).compare("-m") == 0) && (argc == 3))
+        {
+            int tmpMax = atoi(*(argv + 2));
+            
+            if(tmpMax > 1) result = matlab(tmpMax);
             else
             {
                 cout << "Invalid MAXIN argument: " << *(argv + 2) << " => " << tmpMax << endl;
@@ -138,6 +151,7 @@ static void printHelp()
     
     cout << "\nOptions:\n" << left;
     cout << setw(optWidth) << "  NUMBER"        << "Just returns the result. (-1 on error)\n";
+    cout << setw(optWidth) << "  -m MAXIN"      << "Displays a Octave/Matlab script, for to copy-paste.\n";
     cout << setw(optWidth) << "  -a MAXIN"      << "Runs the algorithm with inputs from 1 to MAXIN and saves the results in \"" << resultFilename << "\". Existing files will be overwritten.\n" ;
     cout << setw(optWidth) << "  -l"            << "Enters an interactive loop. Can be terminated with an inputvalue of 0.\n";
     cout << setw(optWidth) << "  -h, --help"    << "Prints this help text.\n";
@@ -195,6 +209,35 @@ static int analyzer(int max)
             cout << "Unable to open the file." << endl;
             result = 1;
         }
+    }
+    
+    else
+    {
+        cout << "Invalid MAX value." << endl;
+        result = 1;
+    }
+    
+    return result;
+}
+
+static int matlab(int max)
+{
+    int result = 0;
+    
+    if(max > 1)
+    {
+        cout << "res = [";
+        
+        for(int i = 1; i <= max; ++i)
+        {
+            unsigned int r = collatzQuiet(i);
+            
+            if(i > 1) cout << ", ";
+            
+            cout << r;
+        }
+        
+        cout << "];\nhist(res)" << endl;
     }
     
     else
