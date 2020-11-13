@@ -4,7 +4,7 @@ Test project after the installation of Eclipse C/C++ on Manjaro.
 
 ---
 
-See how `setw()` handles unicode chars in the encoding module:
+Interesting: See how `setw()` handles unicode chars in the encoding module:
 ```
 $ ./cliArgTest -a b ä en äöü test ÿ
 arguments:
