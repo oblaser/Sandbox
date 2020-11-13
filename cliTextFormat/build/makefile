@@ -14,6 +14,9 @@ LINK = g++
 CFLAGS = -c -D _DEBUG -Wall -W -O0 -pedantic
 LFLAGS = -D _DEBUG -Wall -W -O0 -pedantic
 
+#CFLAGS = -c -Wall -W -O0 -pedantic
+#LFLAGS = -Wall -W -O0 -pedantic
+
 DEFAULTDEPENDENCIES = ../project.h
 
 OBJS = main.o cli.o

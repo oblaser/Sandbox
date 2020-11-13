@@ -3,7 +3,7 @@
 author:     Oliver Blaser
 
 date c:     15.10.2020
-date e:     25.10.2020
+date e:     13.11.2020
 
 */
 
@@ -12,7 +12,7 @@ date e:     25.10.2020
 
 using namespace cli;
 
-int main(int argc, const char** argv)
+int main()
 {   
     println("some tests with formatting in concole applications...");
 
@@ -75,11 +75,12 @@ int main(int argc, const char** argv)
 
     println("\n");
 
-#if(PRJ_WIN32) // windows sadly does not have a UTF8 console, or I just didn't figure it out
+#if(PRJ_WIN32 || PRJ_LINUX_ARM) // windows sadly does not have a UTF8 console, or I just didn't figure it out
     char block[] = "#";
 #else
     char block[] = { (char)0xE2, (char)0x96, (char)0x84, (char)0x00 };
 #endif
+    
     print(block, FGC_BRIGHT_RED);
     print(block, FGC_BRIGHT_YELLOW);
     print(block, FGC_BRIGHT_GREEN);

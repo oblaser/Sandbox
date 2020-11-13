@@ -3,7 +3,7 @@
 author:     Oliver Blaser
 
 date c:     21.10.2020
-date e:     24.10.2020
+date e:     13.11.2020
 
 */
 
@@ -12,9 +12,11 @@ date e:     24.10.2020
 
 #ifdef WIN32
 #define PRJ_LINUX 0
+#define PRJ_LINUX_ARM 0
 #define PRJ_WIN32 1
 #else
 #define PRJ_LINUX 1
+#define PRJ_LINUX_ARM 0
 #define PRJ_WIN32 0
 #endif
 
