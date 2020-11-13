@@ -2,13 +2,16 @@
 # author:       Oliver Blaser
 #
 # date c:       25.10.2020
-# date e:       25.10.2020
+# date e:       03.11.2020
 #
 # license:      MIT - Oliver Blaser
 #
 
 CC = g++
 LINK = g++
+
+#CC = aarch64-linux-gnu-g++
+#LINK = aarch64-linux-gnu-g++
 
 CFLAGS = -c -D _DEBUG -Wall -W -O0 -pedantic
 LFLAGS = -D _DEBUG -Wall -W -O0 -pedantic
