@@ -3,7 +3,7 @@
 author:     Oliver Blaser
 
 date c:     07.11.2020
-date e:     12.11.2020
+date e:     13.11.2020
 
 */
 
@@ -30,50 +30,59 @@ int main(int argc, char** argv)
 {
     int result = 0;
     
-    if((string(*(argv + 1)).compare("-l") == 0) && (argc == 2))
+    if(argc > 1)
     {
-        interactiveLoop();
-    }
-    
-    else if((string(*(argv + 1)).compare("-a") == 0) && (argc == 3))
-    {
-        int tmpMax = atoi(*(argv + 2));
+        if((string(*(argv + 1)).compare("-l") == 0) && (argc == 2))
+        {
+            interactiveLoop();
+        }
         
-        if(tmpMax > 1) result = analyzer(tmpMax);
+        else if((string(*(argv + 1)).compare("-a") == 0) && (argc == 3))
+        {
+            int tmpMax = atoi(*(argv + 2));
+            
+            if(tmpMax > 1) result = analyzer(tmpMax);
+            else
+            {
+                cout << "Invalid MAXIN argument: " << *(argv + 2) << " => " << tmpMax << endl;
+                result = 1;
+            }
+        }
+        
+        else if(((string(*(argv + 1)).compare("-h") == 0) ||
+                    (string(*(argv + 1)).compare("--help") == 0)) && (argc == 2))
+        {
+            printHelp();
+        }
+        
+        else if(((string(*(argv + 1)).compare("-v") == 0) ||
+                    (string(*(argv + 1)).compare("--version") == 0)) && (argc == 2))
+        {
+            cout << "sandbox project => no versioning" << endl;
+        }
+        
         else
         {
-            cout << "Invalid MAXIN argument: " << *(argv + 2) << " => " << tmpMax << endl;
-            result = 1;
+            int tmpValue = atoi(*(argv + 1));
+            
+            if((tmpValue > 0) && (argc == 2))
+            {
+                unsigned int r = collatzQuiet(tmpValue);
+                cout << r << endl;
+            }
+            
+            else
+            {
+                cout << "invalid arguments" << endl;
+                result = 1;
+            }
         }
-    }
-    
-    else if(((string(*(argv + 1)).compare("-h") == 0) ||
-                (string(*(argv + 1)).compare("--help") == 0)) && (argc == 2))
-    {
-        printHelp();
-    }
-    
-    else if(((string(*(argv + 1)).compare("-v") == 0) ||
-                (string(*(argv + 1)).compare("--version") == 0)) && (argc == 2))
-    {
-        cout << "sandbox project => no versionning" << endl;
     }
     
     else
     {
-        int tmpValue = atoi(*(argv + 1));
-        
-        if((tmpValue > 0) && (argc == 2))
-        {
-            unsigned int r = collatzQuiet(tmpValue);
-            cout << r << endl;
-        }
-        
-        else
-        {
-            cout << "Invalid arguments! Get help: haltProblem -h" << endl;
-            result = 1;
-        }
+        cout << "invalid arguments" << endl;
+        result = 1;
     }
 
     return result;
@@ -135,7 +144,7 @@ static void printHelp()
     
     cout << "\nOnly one option at once allowed.\n";
     
-    cout << "\nSee \x1B[4mhttps://github.com/oblaser/Sandbox/haltProblem/readme.md\x1B[24m for more information.\n";
+    cout << "\nSee https://github.com/oblaser/Sandbox/tree/master/haltProblem/ for more information.\n";
     
     cout << endl;
 }

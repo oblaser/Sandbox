@@ -2,9 +2,7 @@
 # author:       Oliver Blaser
 #
 # date c:       25.10.2020
-# date e:       03.11.2020
-#
-# license:      MIT - Oliver Blaser
+# date e:       13.11.2020
 #
 
 CC = g++
