@@ -21,6 +21,6 @@ I used `Visual Studio 2019` (msvc) on Windows and the build-essential package (`
 
 ## Example
 
-The difference from normal to bold isn't obvious on Manjaro. I think I saw it on my screen, aldought it is not visible on the image.
+The difference from normal to bold isn't really visible on the compressed image, but it is there.
 
 ![](./img0.png)
