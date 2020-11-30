@@ -1,3 +1,10 @@
+#
+# Author:     Oliver Blaser
+#
+# Date c:     29.11.2020
+# Date e:     29.11.2020
+#
+
 titleColor=94
 ec=0
 

@@ -1,3 +1,11 @@
+/*
+
+Author:     Oliver Blaser
+
+Date c:     29.11.2020
+Date e:     29.11.2020
+
+*/
  
 #ifndef _SUBMODULE_H_
 #define _SUBMODULE_H_
