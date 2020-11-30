@@ -1,6 +1,6 @@
 # cmake and filesystem
 
-- first time useing CMake
+- first time using CMake
 - experiments with the new (since c++17) filesystem library
 
 ### Test Commands
