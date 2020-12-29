@@ -59,13 +59,15 @@ forms::main::main(int x, int y, int w, int h) : wxFrame(nullptr, idAny, "Mineswe
         settings.setFieldWidth(30);
         settings.setFieldHeight(20);
         settings.setRelNMines(0.16f);
-        wxMessageBox("Settingsfile could not be loaded. Using default values.\nresult: " + wxString::FromCDouble(loadSettingsResult, 0), " ");
+        wxMessageBox("Settingsfile could not be loaded. Using default values.\nresult: " + wxString::FromCDouble(loadSettingsResult, 0), " ", wxOK | wxCENTRE | wxICON_WARNING);
     }
 
     SetMinSize(wxSize(270, 250));
 
     initMenuBar();
     initControls();
+
+    Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(forms::main::OnClose));
 }
 
 forms::main::~main()
@@ -93,6 +95,8 @@ void forms::main::initControls()
     mainSizer->Add(ss2, 1, wxALIGN_CENTER);
 
     panel->SetSizer(mainSizer);
+
+    panel->Bind(wxEVT_CHAR_HOOK, &forms::main::OnKeyDown, this);
 }
 
 void forms::main::initMenuBar()
@@ -149,7 +153,7 @@ void forms::main::menu_options_settings_click(wxCommandEvent& e)
             int saveSettingsResult = application::settingsFile::save(application::settingsFile::defaultFileName, settings);
             if (saveSettingsResult != 0)
             {
-                wxMessageBox("Settingsfile could not be written.\nresult: " + wxString::FromCDouble(saveSettingsResult, 0), " ");
+                wxMessageBox("Settingsfile could not be written.\nresult: " + wxString::FromCDouble(saveSettingsResult, 0), " ", wxOK | wxCENTRE | wxICON_WARNING);
             }
         }
     }/*
@@ -178,7 +182,7 @@ void forms::main::mwnu_help_gitHubPage_click(wxCommandEvent& e)
 
     if (!wxLaunchDefaultBrowser(urlStr))
     {
-        wxMessageDialog* dlg = new wxMessageDialog(this, "Could not open URL:\n" + urlStr);
+        wxMessageDialog* dlg = new wxMessageDialog(this, "Could not open URL:\n" + urlStr, " ", wxOK | wxCENTRE | wxICON_NONE);
         dlg->ShowModal();
     }
 }
@@ -199,4 +203,26 @@ void forms::main::mineField_finnished(wxEvent& e)
 
 void forms::main::mineField_mineExploded(wxEvent& e)
 {
+}
+
+void forms::main::OnClose(wxCloseEvent& e)
+{
+    if (wxMessageBox("Really leave the game?", " ", wxYES_NO | wxCENTRE | wxICON_QUESTION) == wxYES)
+    {
+        Destroy();
+    }
+    else
+    {
+        e.Veto();
+    }
+}
+
+void forms::main::OnKeyDown(wxKeyEvent& e)
+{
+    if (e.GetKeyCode() == WXK_F1)
+    {
+        menu_help_about_click(wxCommandEvent());
+    }
+    //else if ...
+    else e.Skip();
 }

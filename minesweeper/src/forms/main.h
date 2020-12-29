@@ -46,6 +46,9 @@ namespace forms
         void mineField_finnished(wxEvent& e);
         void mineField_mineExploded(wxEvent& e);
 
+        void OnClose(wxCloseEvent& e);
+        void OnKeyDown(wxKeyEvent& e);
+
         wxDECLARE_EVENT_TABLE();
     };
 }
