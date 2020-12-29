@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           26.12.2020
+\date           29.12.2020
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -18,15 +18,16 @@
 #define DISCOVERFIELD_DISPLAY_STATUS 0
 #endif
 
-wxBEGIN_EVENT_TABLE(forms::controls::mineField, wxHVScrolledWindow)
-EVT_LEFT_UP(forms::controls::mineField::OnMouseLeftClick)
-EVT_PAINT(forms::controls::mineField::OnPaint)
-EVT_SIZE(forms::controls::mineField::OnSize)
+
+wxBEGIN_EVENT_TABLE(forms::controls::mineField::mineField, wxHVScrolledWindow)
+EVT_LEFT_UP(forms::controls::mineField::mineField::OnMouseLeftClick)
+EVT_PAINT(forms::controls::mineField::mineField::OnPaint)
+EVT_SIZE(forms::controls::mineField::mineField::OnSize)
 wxEND_EVENT_TABLE()
 
 
 
-forms::controls::mineField::mineField(wxWindow* parent, wxWindowID id,
+forms::controls::mineField::mineField::mineField(wxWindow* parent, wxWindowID id,
     const wxPoint& pos,
     const wxSize& size,
     long style,
@@ -60,33 +61,33 @@ forms::controls::mineField::mineField(wxWindow* parent, wxWindowID id,
     setFieldParams(10, 10, 0.15f);
 }
 
-forms::controls::mineField::~mineField()
+forms::controls::mineField::mineField::~mineField()
 {
     delete[] field;
     delete[] mines;
 }
 
-int forms::controls::mineField::getFieldHeight() const
+int forms::controls::mineField::mineField::getFieldHeight() const
 {
     return fieldHeight;
 }
 
-int forms::controls::mineField::getFieldWidth() const
+int forms::controls::mineField::mineField::getFieldWidth() const
 {
     return fieldWidth;
 }
 
-wxSize forms::controls::mineField::getPaintedFieldSize() const
+wxSize forms::controls::mineField::mineField::getPaintedFieldSize() const
 {
     return wxSize((fieldWidth * tileSize), (fieldHeight * tileSize));
 }
 
-int forms::controls::mineField::getTileSize() const
+int forms::controls::mineField::mineField::getTileSize() const
 {
     return 0;
 }
 
-void forms::controls::mineField::resetGame()
+void forms::controls::mineField::mineField::resetGame()
 {
     delete[] field;
     delete[] mines;
@@ -104,11 +105,12 @@ void forms::controls::mineField::resetGame()
     }
 
     firstClick = true;
+    finnished = false;
 
     Refresh();
 }
 
-int forms::controls::mineField::setFieldParams(int nCol, int nRow, float relativeNumOfMines)
+int forms::controls::mineField::mineField::setFieldParams(int nCol, int nRow, float relativeNumOfMines)
 {
     if ((nCol > 0) && (nRow > 0) && (relativeNumOfMines > 0.0f))
     {
@@ -132,7 +134,7 @@ int forms::controls::mineField::setFieldParams(int nCol, int nRow, float relativ
     return 1;
 }
 
-int forms::controls::mineField::setTileSize(int size)
+int forms::controls::mineField::mineField::setTileSize(int size)
 {
     if (size >= 0)
     {
@@ -148,7 +150,7 @@ int forms::controls::mineField::setTileSize(int size)
     return 1;
 }
 
-int forms::controls::mineField::cntMinesAround(int x, int y)
+int forms::controls::mineField::mineField::cntMinesAround(int x, int y)
 {
     int cntMines = 0;
 
@@ -169,11 +171,9 @@ int forms::controls::mineField::cntMinesAround(int x, int y)
     return cntMines;
 }
 
-void forms::controls::mineField::discoverField()
+void forms::controls::mineField::mineField::discoverField()
 {
-#if DISCOVERFIELD_DISPLAY_STATUS
     int cntLoops = 0;
-#endif
 
     bool discoveringTiles;
     do
@@ -204,11 +204,13 @@ void forms::controls::mineField::discoverField()
             }
         }
 
-#if DISCOVERFIELD_DISPLAY_STATUS
-        ++cntLoops;
-#endif
+        if (cntLoops >= 0) ++cntLoops;
 
     } while (discoveringTiles);
+
+    MineFieldDiscoverEvent* tmpEvt = new MineFieldDiscoverEvent(cEVT_MINEFIELD_DISCOVER);
+    tmpEvt->setNLoops(cntLoops);
+    wxQueueEvent(this, tmpEvt);
 
 #if DISCOVERFIELD_DISPLAY_STATUS
     if (cntLoops > 1)
@@ -219,7 +221,7 @@ void forms::controls::mineField::discoverField()
 #endif
 }
 
-bool forms::controls::mineField::allMinesFound()
+bool forms::controls::mineField::mineField::allMinesFound()
 {
     bool won = true;
 
@@ -239,7 +241,7 @@ bool forms::controls::mineField::allMinesFound()
     return won;
 }
 
-void forms::controls::mineField::OnDraw(wxDC& dc)
+void forms::controls::mineField::mineField::OnDraw(wxDC& dc)
 {
     dc.Clear();
 
@@ -323,12 +325,12 @@ void forms::controls::mineField::OnDraw(wxDC& dc)
     }
 }
 
-float forms::controls::mineField::getRelNMines() const
+float forms::controls::mineField::mineField::getRelNMines() const
 {
     return relNMines;
 }
 
-void forms::controls::mineField::OnMouseLeftClick(wxMouseEvent& e)
+void forms::controls::mineField::mineField::OnMouseLeftClick(wxMouseEvent& e)
 {
     int eventRiseFlags = 0;
 
@@ -336,83 +338,90 @@ void forms::controls::mineField::OnMouseLeftClick(wxMouseEvent& e)
     int x = e.GetX() / tileSize + visBeg.GetCol();
     int y = e.GetY() / tileSize + visBeg.GetRow();
 
-    if (firstClick)
+    if (!finnished)
     {
-        firstClick = false;
-
-        int mines = fieldWidth * fieldHeight * relNMines;
-
-        while (mines)
+        if (firstClick)
         {
-            int newMinePos = rand() % (fieldWidth * fieldHeight);
+            firstClick = false;
 
-            if ((newMinePos != (y * fieldWidth + x)) && (this->mines[newMinePos] == 0))
-            {
-                this->mines[newMinePos] = 1;
-                --mines;
-            }
-        }
-    }
+            int mines = fieldWidth * fieldHeight * relNMines;
 
-    if (mines[y * fieldWidth + x])
-    {
-        for (int i = 0; i < fieldWidth; ++i)
-        {
-            for (int j = 0; j < fieldHeight; ++j)
+            while (mines)
             {
-                if (mines[j * fieldWidth + i]) field[j * fieldWidth + i] = 10;
+                int newMinePos = rand() % (fieldWidth * fieldHeight);
+
+                if ((newMinePos != (y * fieldWidth + x)) && (this->mines[newMinePos] == 0))
+                {
+                    this->mines[newMinePos] = 1;
+                    --mines;
+                }
             }
         }
 
-        field[y * fieldWidth + x] = 11;
-
-        eventRiseFlags |= 0x01;
-    }
-    else
-    {
-        field[y * fieldWidth + x] = cntMinesAround(x, y);
-    }
-
-    discoverField();
-
-    if (allMinesFound())
-    {
-        for (int i = 0; i < fieldWidth; ++i)
+        if (mines[y * fieldWidth + x])
         {
-            for (int j = 0; j < fieldHeight; ++j)
+            for (int i = 0; i < fieldWidth; ++i)
             {
-                if (mines[j * fieldWidth + i]) field[j * fieldWidth + i] = 12;
+                for (int j = 0; j < fieldHeight; ++j)
+                {
+                    if (mines[j * fieldWidth + i]) field[j * fieldWidth + i] = 10;
+                }
             }
+
+            field[y * fieldWidth + x] = 11;
+
+            eventRiseFlags |= 0x01;
+        }
+        else
+        {
+            field[y * fieldWidth + x] = cntMinesAround(x, y);
         }
 
-        eventRiseFlags |= 0x02;
-    }
+        discoverField();
 
-    this->Refresh(false);
+        if (allMinesFound())
+        {
+            for (int i = 0; i < fieldWidth; ++i)
+            {
+                for (int j = 0; j < fieldHeight; ++j)
+                {
+                    if (mines[j * fieldWidth + i]) field[j * fieldWidth + i] = 12;
+                }
+            }
 
-    if (eventRiseFlags & 0x01)
-    {
-        wxMessageBox("BOOOOM", " ");
-        resetGame();
-    }
+            eventRiseFlags |= 0x02;
+        }
 
-    if (eventRiseFlags & 0x02)
-    {
-        wxMessageBox("you won", "congrats!");
-        resetGame();
+        this->Refresh(false);
+
+        if (eventRiseFlags & 0x01)
+        {
+            finnished = true;
+
+            wxCommandEvent* tmpEvt = new wxCommandEvent(cEVT_MINEFIELD_FAIL);
+            wxQueueEvent(this, tmpEvt);
+        }
+
+        if (eventRiseFlags & 0x02)
+        {
+            finnished = true;
+
+            wxCommandEvent* tmpEvt = new wxCommandEvent(cEVT_MINEFIELD_DONE);
+            wxQueueEvent(this, tmpEvt);
+        }
     }
 
     e.Skip();
 }
 
-void forms::controls::mineField::OnPaint(wxPaintEvent& e)
+void forms::controls::mineField::mineField::OnPaint(wxPaintEvent& e)
 {
     wxBufferedPaintDC dc(this);
     this->PrepareDC(dc);
     this->OnDraw(dc);
 }
 
-void forms::controls::mineField::OnSize(wxSizeEvent& e)
+void forms::controls::mineField::mineField::OnSize(wxSizeEvent& e)
 {
     wxSize size = GetSize();
     wxSize minSize = GetMinSize();
@@ -426,12 +435,16 @@ void forms::controls::mineField::OnSize(wxSizeEvent& e)
     e.Skip();
 }
 
-wxCoord forms::controls::mineField::OnGetRowHeight(size_t row) const
+wxCoord forms::controls::mineField::mineField::OnGetRowHeight(size_t row) const
 {
     return wxCoord(tileSize);
 }
 
-wxCoord forms::controls::mineField::OnGetColumnWidth(size_t col) const
+wxCoord forms::controls::mineField::mineField::OnGetColumnWidth(size_t col) const
 {
     return wxCoord(tileSize);
 }
+
+wxDEFINE_EVENT(cEVT_MINEFIELD_DONE, wxCommandEvent);
+wxDEFINE_EVENT(cEVT_MINEFIELD_FAIL, wxCommandEvent);
+wxDEFINE_EVENT(cEVT_MINEFIELD_DISCOVER, forms::controls::MineFieldDiscoverEvent);

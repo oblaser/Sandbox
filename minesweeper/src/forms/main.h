@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           28.12.2020
+\date           29.12.2020
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -43,8 +43,13 @@ namespace forms
         void menu_help_about_click(wxCommandEvent& e);
 
         void buttonReset_click(wxCommandEvent& e);
-        void mineField_finnished(wxEvent& e);
-        void mineField_mineExploded(wxEvent& e);
+        void mineField_done(wxEvent& e);
+        void mineField_fail(wxEvent& e);
+        void mineField_discover(forms::controls::MineFieldDiscoverEvent& e);
+
+        void resetGame();
+        void setStatusText(wxString str, wxColour colour);
+        void setStatusText(wxString str, int colour = 0);
 
         void OnClose(wxCloseEvent& e);
         void OnKeyDown(wxKeyEvent& e);

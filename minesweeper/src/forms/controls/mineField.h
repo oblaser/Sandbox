@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           27.12.2020
+\date           29.12.2020
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -25,7 +25,7 @@ namespace forms
             mineField(wxWindow* parent, wxWindowID id,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
-                long style = 0,
+                long style = wxNO_BORDER,
                 const wxString& name = wxPanelNameStr);
             ~mineField();
 
@@ -57,6 +57,7 @@ namespace forms
             int colorNumbers[8];
 
             bool firstClick = true;
+            bool finnished = false;
             int* mines = nullptr;
             int* field = nullptr;
 
@@ -74,7 +75,26 @@ namespace forms
 
             wxDECLARE_EVENT_TABLE();
         };
+
+        class MineFieldDiscoverEvent : public wxEvent
+        {
+        public:
+            MineFieldDiscoverEvent(wxEventType eventType, int winid = 0) : wxEvent(winid, eventType), nLoops(0) {}
+
+            int getNLoops() const { return nLoops; }
+            void setNLoops(int value) { nLoops = value; }
+
+            // see https://docs.wxwidgets.org/3.0/overview_events.html#overview_events_custom_ownclass
+            virtual wxEvent* Clone() const { return new MineFieldDiscoverEvent(*this); }
+
+        private:
+            int nLoops;
+        };
     }
 }
+
+wxDECLARE_EVENT(cEVT_MINEFIELD_DONE, wxCommandEvent);
+wxDECLARE_EVENT(cEVT_MINEFIELD_FAIL, wxCommandEvent);
+wxDECLARE_EVENT(cEVT_MINEFIELD_DISCOVER, forms::controls::MineFieldDiscoverEvent);
 
 #endif // _FORMS_CONTROLS_MINEFIELD_H_

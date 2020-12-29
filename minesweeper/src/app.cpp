@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           27.12.2020
+\date           29.12.2020
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -41,7 +41,7 @@ bool app::OnInit()
     int mainDisplayIndex = wxDisplay::GetFromPoint(wxPoint(1, 1));
 
         int w = 650;
-        int h = 536;
+        int h = 550;
 
     if (mainDisplayIndex != wxNOT_FOUND)
     {

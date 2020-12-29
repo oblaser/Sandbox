@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           28.12.2020
+\date           29.12.2020
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -67,7 +67,11 @@ forms::main::main(int x, int y, int w, int h) : wxFrame(nullptr, idAny, "Mineswe
     initMenuBar();
     initControls();
 
-    Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(forms::main::OnClose));
+    //Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(forms::main::OnClose));
+
+    mineField->Bind(cEVT_MINEFIELD_DONE, &forms::main::mineField_done, this);
+    mineField->Bind(cEVT_MINEFIELD_FAIL, &forms::main::mineField_fail, this);
+    //mineField->Bind(cEVT_MINEFIELD_DISCOVER, &forms::main::mineField_discover, this);
 }
 
 forms::main::~main()
@@ -81,20 +85,22 @@ void forms::main::initControls()
     mainSizer = new wxBoxSizer(wxVERTICAL);
 
     wxBoxSizer* ss1 = new wxBoxSizer(wxVERTICAL);
-    btn_reset = new wxButton(panel, id_buttonReset, "reset");
+    btn_reset = new wxButton(panel, id_buttonReset, "reset", wxDefaultPosition, wxSize(40,30));
     btn_reset->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &forms::main::buttonReset_click, this);
-    st_status = new wxStaticText(panel, idAny, "status");
-    ss1->Add(btn_reset, 0, wxALIGN_CENTER | wxTOP | wxLEFT | wxRIGHT, 5);
-    ss1->Add(st_status, 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, 5);
-    mainSizer->Add(ss1, 0, wxALIGN_CENTER);
+    st_status = new wxStaticText(panel, idAny, "");
+    st_status->SetFont(wxFont(13, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    ss1->Add(btn_reset, 0, wxALIGN_CENTER);
+    ss1->Add(st_status, 0, wxALIGN_CENTER | wxTOP, 5);
+    mainSizer->Add(ss1, 0, wxALIGN_CENTER | wxTOP  | wxLEFT | wxRIGHT, 5);
 
     wxBoxSizer* ss2 = new wxBoxSizer(wxHORIZONTAL);
-    mineField = new controls::mineField(panel, idAny, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+    mineField = new controls::mineField(panel, idAny, wxDefaultPosition, wxDefaultSize);
     mineField->setFieldParams(settings.getFieldWidth(), settings.getFieldHeight(), settings.getRelNMines());
-    ss2->Add(mineField, 0, wxALIGN_CENTER | wxALL, 5);
-    mainSizer->Add(ss2, 1, wxALIGN_CENTER);
+    ss2->Add(mineField, 0, wxALIGN_CENTER);
+    mainSizer->Add(ss2, 1, wxALIGN_CENTER | wxALL, 5);
 
     panel->SetSizer(mainSizer);
+    mainSizer->Layout();
 
     panel->Bind(wxEVT_CHAR_HOOK, &forms::main::OnKeyDown, this);
 }
@@ -147,8 +153,9 @@ void forms::main::menu_options_settings_click(wxCommandEvent& e)
 
             mineField->setFieldParams(settings.getFieldWidth(), settings.getFieldHeight(), settings.getRelNMines());
 
-            mineField->GetContainingSizer()->Fit(mineField);
             mainSizer->Layout();
+
+            setStatusText("");
 
             int saveSettingsResult = application::settingsFile::save(application::settingsFile::defaultFileName, settings);
             if (saveSettingsResult != 0)
@@ -194,15 +201,44 @@ void forms::main::menu_help_about_click(wxCommandEvent& e)
 
 void forms::main::buttonReset_click(wxCommandEvent& e)
 {
+    resetGame();
+}
+
+void forms::main::mineField_done(wxEvent& e)
+{
+    setStatusText("Hooray, you did it!", 0x005000);
+}
+
+void forms::main::mineField_fail(wxEvent& e)
+{
+    setStatusText("BOOOOM", 0x000096);
+}
+
+void forms::main::mineField_discover(forms::controls::MineFieldDiscoverEvent& e)
+{
+    if (e.getNLoops() > 1)
+    {
+        wxMessageBox("Looped " + wxString::FromCDouble(e.getNLoops()) + " times through the field.", "Discover the field");
+    }
+}
+
+void forms::main::resetGame()
+{
     mineField->resetGame();
+
+    setStatusText("");
 }
 
-void forms::main::mineField_finnished(wxEvent& e)
+void forms::main::setStatusText(wxString str, wxColour colour)
 {
+    st_status->SetForegroundColour(colour);
+    st_status->SetLabel(str);
+    mainSizer->Layout();
 }
 
-void forms::main::mineField_mineExploded(wxEvent& e)
+void forms::main::setStatusText(wxString str, int colour)
 {
+    setStatusText(str, wxColour(colour));
 }
 
 void forms::main::OnClose(wxCloseEvent& e)
