@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           21.12.2020
+\date           27.12.2020
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -12,8 +12,8 @@
 #define _APP_H_
 
 #include "forms/wxHelper.h"
-
 #include "forms/main.h"
+#include "middleware/version.h"
 
 class app : public wxApp
 {

@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           26.12.2020
+\date           27.12.2020
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -42,7 +42,28 @@
 
 namespace wxHelper
 {
-    enum { idStart = wxID_HIGHEST + 1 };
+    namespace defaultSize
+    {
+        const wxSize button = wxSize(75, 23);
+        const wxSize textBox = wxSize(100, 20);
+    }
+
+    enum
+    {
+        // link
+        idAny = wxID_ANY,
+
+        // global customn IDs
+        idApply = wxID_HIGHEST + 1,
+        idCancel,
+        idIgnore,
+        idNo,
+        idOK,
+        idYes,
+
+        // local custom ID start
+        idBeginLocalCustom
+    };
 }
 
 

@@ -79,7 +79,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)..;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -94,7 +94,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)..;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -107,7 +107,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)..;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__WXMSW__;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -117,7 +117,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)..;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__WXMSW__;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -127,14 +127,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\app.cpp" />
+    <ClCompile Include="..\application\settings.cpp" />
     <ClCompile Include="..\forms\controls\mineField.cpp" />
     <ClCompile Include="..\forms\main.cpp" />
+    <ClCompile Include="..\forms\settingsDialog.cpp" />
+    <ClCompile Include="..\middleware\binFile.cpp" />
+    <ClCompile Include="..\middleware\version.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\app.h" />
+    <ClInclude Include="..\application\settings.h" />
     <ClInclude Include="..\forms\controls\mineField.h" />
     <ClInclude Include="..\forms\main.h" />
+    <ClInclude Include="..\forms\settingsDialog.h" />
     <ClInclude Include="..\forms\wxHelper.h" />
+    <ClInclude Include="..\middleware\binFile.h" />
+    <ClInclude Include="..\middleware\version.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

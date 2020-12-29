@@ -2,16 +2,16 @@
 
 \author         Oliver Blaser
 
-\date           26.12.2020
+\date           27.12.2020
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
 */
 
-#ifndef _MINEFIELD_H_
-#define _MINEFIELD_H_
+#ifndef _FORMS_CONTROLS_MINEFIELD_H_
+#define _FORMS_CONTROLS_MINEFIELD_H_
 
-#include "../wxHelper.h"
+#include "forms/wxHelper.h"
 
 #include "wx/vscroll.h"
 
@@ -77,4 +77,4 @@ namespace forms
     }
 }
 
-#endif // _MINEFIELD_H_
+#endif // _FORMS_CONTROLS_MINEFIELD_H_

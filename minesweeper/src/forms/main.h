@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           26.12.2020
+\date           28.12.2020
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -12,8 +12,9 @@
 #define _FORMS_MAIN_H_
 
 #include "wxHelper.h"
-
 #include "controls/mineField.h"
+#include "application/settings.h"
+#include "middleware/version.h"
 
 namespace forms
 {
@@ -24,11 +25,22 @@ namespace forms
         ~main();
 
     private:
-        wxButton* buttonReset = nullptr;
-        wxStaticText* labelStatus = nullptr;
+        const util::Version version = util::Version(0, 1, 1000);
+
+        application::Settings settings;
+
+        wxBoxSizer* mainSizer = nullptr;
+        wxButton* btn_reset = nullptr;
+        wxStaticText* st_status = nullptr;
         controls::mineField* mineField = nullptr;
 
         void initControls();
+        void initMenuBar();
+
+        void menu_file_exit_click(wxCommandEvent& e);
+        void menu_options_settings_click(wxCommandEvent& e);
+        void mwnu_help_gitHubPage_click(wxCommandEvent& e);
+        void menu_help_about_click(wxCommandEvent& e);
 
         void buttonReset_click(wxCommandEvent& e);
         void mineField_finnished(wxEvent& e);
