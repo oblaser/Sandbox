@@ -196,7 +196,7 @@ void forms::main::mwnu_help_gitHubPage_click(wxCommandEvent& e)
 
 void forms::main::menu_help_about_click(wxCommandEvent& e)
 {
-    wxMessageBox("Minesweeper " + version.toString() + "\n\nGNU GPLv3 Copyright (c) 2020 Oliver Blaser", "About");
+    wxMessageBox("Minesweeper " + version.toString() + "\n\nGNU GPLv3 - Copyright (c) 2020 Oliver Blaser", "About", wxOK | wxCENTRE | wxICON_NONE);
 }
 
 void forms::main::buttonReset_click(wxCommandEvent& e)
