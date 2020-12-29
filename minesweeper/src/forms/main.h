@@ -25,7 +25,7 @@ namespace forms
         ~main();
 
     private:
-        const util::Version version = util::Version(0, 1, 1000);
+        const util::Version version = util::Version(0, 1, 0);
 
         application::Settings settings;
 
