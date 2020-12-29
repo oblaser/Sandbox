@@ -19,15 +19,14 @@
 #endif
 
 
-wxBEGIN_EVENT_TABLE(forms::controls::mineField::mineField, wxHVScrolledWindow)
-EVT_LEFT_UP(forms::controls::mineField::mineField::OnMouseLeftClick)
-EVT_PAINT(forms::controls::mineField::mineField::OnPaint)
-EVT_SIZE(forms::controls::mineField::mineField::OnSize)
+wxBEGIN_EVENT_TABLE(forms::controls::mineField, wxHVScrolledWindow)
+EVT_LEFT_UP(forms::controls::mineField::OnMouseLeftClick)
+EVT_PAINT(forms::controls::mineField::OnPaint)
 wxEND_EVENT_TABLE()
 
 
 
-forms::controls::mineField::mineField::mineField(wxWindow* parent, wxWindowID id,
+forms::controls::mineField::mineField(wxWindow* parent, wxWindowID id,
     const wxPoint& pos,
     const wxSize& size,
     long style,
@@ -58,36 +57,38 @@ forms::controls::mineField::mineField::mineField(wxWindow* parent, wxWindowID id
 
     srand(time(0));
 
+    Bind(wxEVT_SIZE, &forms::controls::mineField::OnSize, this);
+
     setFieldParams(10, 10, 0.15f);
 }
 
-forms::controls::mineField::mineField::~mineField()
+forms::controls::mineField::~mineField()
 {
     delete[] field;
     delete[] mines;
 }
 
-int forms::controls::mineField::mineField::getFieldHeight() const
+int forms::controls::mineField::getFieldHeight() const
 {
     return fieldHeight;
 }
 
-int forms::controls::mineField::mineField::getFieldWidth() const
+int forms::controls::mineField::getFieldWidth() const
 {
     return fieldWidth;
 }
 
-wxSize forms::controls::mineField::mineField::getPaintedFieldSize() const
+wxSize forms::controls::mineField::getPaintedFieldSize() const
 {
     return wxSize((fieldWidth * tileSize), (fieldHeight * tileSize));
 }
 
-int forms::controls::mineField::mineField::getTileSize() const
+int forms::controls::mineField::getTileSize() const
 {
     return 0;
 }
 
-void forms::controls::mineField::mineField::resetGame()
+void forms::controls::mineField::resetGame()
 {
     delete[] field;
     delete[] mines;
@@ -110,7 +111,7 @@ void forms::controls::mineField::mineField::resetGame()
     Refresh();
 }
 
-int forms::controls::mineField::mineField::setFieldParams(int nCol, int nRow, float relativeNumOfMines)
+int forms::controls::mineField::setFieldParams(int nCol, int nRow, float relativeNumOfMines)
 {
     if ((nCol > 0) && (nRow > 0) && (relativeNumOfMines > 0.0f))
     {
@@ -134,7 +135,7 @@ int forms::controls::mineField::mineField::setFieldParams(int nCol, int nRow, fl
     return 1;
 }
 
-int forms::controls::mineField::mineField::setTileSize(int size)
+int forms::controls::mineField::setTileSize(int size)
 {
     if (size >= 0)
     {
@@ -150,7 +151,7 @@ int forms::controls::mineField::mineField::setTileSize(int size)
     return 1;
 }
 
-int forms::controls::mineField::mineField::cntMinesAround(int x, int y)
+int forms::controls::mineField::cntMinesAround(int x, int y)
 {
     int cntMines = 0;
 
@@ -171,7 +172,7 @@ int forms::controls::mineField::mineField::cntMinesAround(int x, int y)
     return cntMines;
 }
 
-void forms::controls::mineField::mineField::discoverField()
+void forms::controls::mineField::discoverField()
 {
     int cntLoops = 0;
 
@@ -221,7 +222,7 @@ void forms::controls::mineField::mineField::discoverField()
 #endif
 }
 
-bool forms::controls::mineField::mineField::allMinesFound()
+bool forms::controls::mineField::allMinesFound()
 {
     bool won = true;
 
@@ -241,7 +242,7 @@ bool forms::controls::mineField::mineField::allMinesFound()
     return won;
 }
 
-void forms::controls::mineField::mineField::OnDraw(wxDC& dc)
+void forms::controls::mineField::OnDraw(wxDC& dc)
 {
     dc.Clear();
 
@@ -325,12 +326,12 @@ void forms::controls::mineField::mineField::OnDraw(wxDC& dc)
     }
 }
 
-float forms::controls::mineField::mineField::getRelNMines() const
+float forms::controls::mineField::getRelNMines() const
 {
     return relNMines;
 }
 
-void forms::controls::mineField::mineField::OnMouseLeftClick(wxMouseEvent& e)
+void forms::controls::mineField::OnMouseLeftClick(wxMouseEvent& e)
 {
     int eventRiseFlags = 0;
 
@@ -414,33 +415,42 @@ void forms::controls::mineField::mineField::OnMouseLeftClick(wxMouseEvent& e)
     e.Skip();
 }
 
-void forms::controls::mineField::mineField::OnPaint(wxPaintEvent& e)
+void forms::controls::mineField::OnPaint(wxPaintEvent& e)
 {
     wxBufferedPaintDC dc(this);
     this->PrepareDC(dc);
     this->OnDraw(dc);
 }
 
-void forms::controls::mineField::mineField::OnSize(wxSizeEvent& e)
+void forms::controls::mineField::OnSize(wxSizeEvent& e)
 {
     wxSize size = GetSize();
     wxSize minSize = GetMinSize();
 
     if ((size.x >= minSize.x) && (size.y >= minSize.y))
     {
-        SetScrollbar(wxVERTICAL | wxHORIZONTAL, 0, 0, 0);
+        // hide the scroll bars
+
+        Unbind(wxEVT_SIZE, &forms::controls::mineField::OnSize, this);
+
+        SetSize(GetSize() + wxSize(20, 20));
+        wxVarHScrollHelper::RefreshAll();
+        wxVarVScrollHelper::RefreshAll();
         Refresh();
+        SetSize(GetSize() - wxSize(20, 20));
+
+        Bind(wxEVT_SIZE, &forms::controls::mineField::OnSize, this);
     }
 
     e.Skip();
 }
 
-wxCoord forms::controls::mineField::mineField::OnGetRowHeight(size_t row) const
+wxCoord forms::controls::mineField::OnGetRowHeight(size_t row) const
 {
     return wxCoord(tileSize);
 }
 
-wxCoord forms::controls::mineField::mineField::OnGetColumnWidth(size_t col) const
+wxCoord forms::controls::mineField::OnGetColumnWidth(size_t col) const
 {
     return wxCoord(tileSize);
 }
