@@ -1,0 +1,4 @@
+
+#include "resources.h"
+
+RESID_ICON_MAIN ICON "..\\..\\assets\\minesweeper.ico"
