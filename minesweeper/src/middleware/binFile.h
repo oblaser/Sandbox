@@ -2,11 +2,14 @@
 
 \author         Oliver Blaser
 
-\date           28.12.2020
+\date           04.01.2021
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
 */
+
+#ifndef _BINFILE_H_
+#define _BINFILE_H_
 
 #include <cstdint>
 #include <string>
@@ -43,3 +46,5 @@ namespace middleware
         std::string fileName;
     };
 }
+
+#endif // _BINFILE_H_
