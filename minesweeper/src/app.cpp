@@ -13,8 +13,6 @@
 
 #include <wx/display.h>
 
-#include "../assets/icon.xpm"
-
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 28251)
@@ -50,7 +48,7 @@ bool app::OnInit()
     }
     else mainForm = new forms::main(30, 30, w, h);
 
-    mainForm->SetIcon(res_icon);
+    mainForm->SetIcon(wxICON(aaaaa_MainIcon));
 
     mainForm->Show();
 
