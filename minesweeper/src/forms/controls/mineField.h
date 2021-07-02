@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           29.12.2020
+\date           02.07.2021
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -61,12 +61,15 @@ namespace forms
             int* mines = nullptr;
             int* field = nullptr;
 
+            wxPoint mouseLeftDownCoord;
+
             int cntMinesAround(int x, int y);
             void discoverField();
             bool allMinesFound();
 
             void OnDraw(wxDC& dc);
-            void OnMouseLeftClick(wxMouseEvent& e);
+            void OnMouseLeftDown(wxMouseEvent& e);
+            void OnMouseLeftUp(wxMouseEvent& e);
             void OnPaint(wxPaintEvent& e);
             void OnSize(wxSizeEvent& e);
 

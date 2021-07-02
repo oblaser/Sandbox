@@ -2,7 +2,7 @@
 
 \author         Oliver Blaser
 
-\date           29.12.2020
+\date           02.07.2021
 
 \copyright      GNU GPLv3 - Copyright (c) 2020 Oliver Blaser
 
@@ -20,7 +20,8 @@
 
 
 wxBEGIN_EVENT_TABLE(forms::controls::mineField, wxHVScrolledWindow)
-EVT_LEFT_UP(forms::controls::mineField::OnMouseLeftClick)
+EVT_LEFT_DOWN(forms::controls::mineField::OnMouseLeftDown)
+EVT_LEFT_UP(forms::controls::mineField::OnMouseLeftUp)
 EVT_PAINT(forms::controls::mineField::OnPaint)
 wxEND_EVENT_TABLE()
 
@@ -30,8 +31,8 @@ forms::controls::mineField::mineField(wxWindow* parent, wxWindowID id,
     const wxPoint& pos,
     const wxSize& size,
     long style,
-    const wxString& name) :
-    wxHVScrolledWindow(parent, id, pos, size, style, name), tileSize(20)
+    const wxString& name)
+    : wxHVScrolledWindow(parent, id, pos, size, style, name), tileSize(20), mouseLeftDownCoord(-1, -1)
 {
     SetBackgroundStyle(wxBG_STYLE_PAINT);
 
@@ -331,7 +332,16 @@ float forms::controls::mineField::getRelNMines() const
     return relNMines;
 }
 
-void forms::controls::mineField::OnMouseLeftClick(wxMouseEvent& e)
+void forms::controls::mineField::OnMouseLeftDown(wxMouseEvent& e)
+{
+    wxPosition visBeg = GetVisibleBegin();
+    int x = e.GetX() / tileSize + visBeg.GetCol();
+    int y = e.GetY() / tileSize + visBeg.GetRow();
+
+    mouseLeftDownCoord = wxPoint(x, y);
+}
+
+void forms::controls::mineField::OnMouseLeftUp(wxMouseEvent& e)
 {
     int eventRiseFlags = 0;
 
@@ -339,7 +349,9 @@ void forms::controls::mineField::OnMouseLeftClick(wxMouseEvent& e)
     int x = e.GetX() / tileSize + visBeg.GetCol();
     int y = e.GetY() / tileSize + visBeg.GetRow();
 
-    if (!finnished)
+    wxPoint fieldPos(x, y);
+
+    if ((!finnished) && (fieldPos == mouseLeftDownCoord))
     {
         if (firstClick)
         {
@@ -411,6 +423,8 @@ void forms::controls::mineField::OnMouseLeftClick(wxMouseEvent& e)
             wxQueueEvent(this, tmpEvt);
         }
     }
+
+    mouseLeftDownCoord = wxPoint(-1, -1);
 
     e.Skip();
 }
