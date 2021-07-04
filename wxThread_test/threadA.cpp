@@ -1,7 +1,7 @@
 /*
 
 \author         Oliver Blaser
-\date           01.07.2021
+\date           04.07.2021
 \copyright      GNU GPLv3 - Copyright (c) 2021 Oliver Blaser
 
 */
@@ -16,7 +16,7 @@ app::ThreadA::ThreadA(wxh::ThreadHost* parentThHost)
 {
 }
 
-wxThread::ExitCode app::ThreadA::Entry()
+int app::ThreadA::doWork()
 {
     int x = 0;
     time_t tFired = 0;
@@ -29,18 +29,21 @@ wxThread::ExitCode app::ThreadA::Entry()
         {
             tFired = t;
 
+            wxThreadEvent e(getDefaultUpdateEvent());
+            e.SetPayload<int>(x);
+            queueEvent(e);
+
+            /* alternative queueing procedure:
+            
             wxThreadEvent e(wxhEVT_THREAD_UPDATE);
-            e.SetId(getID());
+            e.SetId(getThreadID());
             e.SetPayload<int>(x);
             evtHandler->QueueEvent(e.Clone());
+            */
         }
 
         ++x;
     }
 
-    wxThreadEvent e(wxhEVT_THREAD_COMPLETED);
-    e.SetId(getID());
-    evtHandler->QueueEvent(e.Clone());
-
-    return (wxThread::ExitCode)0;
+    return 1;
 }

@@ -1,7 +1,7 @@
 /*
 
 \author         Oliver Blaser
-\date           01.07.2021
+\date           04.07.2021
 \copyright      GNU GPLv3 - Copyright (c) 2021 Oliver Blaser
 
 */
@@ -29,13 +29,11 @@ void app::ThreadB::setData(int data)
     someThreadData = data;
 }
 
-wxThread::ExitCode app::ThreadB::Entry()
+int app::ThreadB::doWork()
 {
     while (!TestDestroy())
     {
         wxThread::This()->Sleep(2000);
-
-        int tmpID = getID();
 
         // CriticalSection scope
         {
@@ -43,16 +41,20 @@ wxThread::ExitCode app::ThreadB::Entry()
 
             ++someThreadData;
 
-            wxThreadEvent e(wxhEVT_THREAD_UPDATE);
-            e.SetId(tmpID);
+            wxThreadEvent e = getDefaultUpdateEvent();
             e.SetPayload<std::string>("accessing thread data: " + std::to_string(someThreadData));
-            evtHandler->QueueEvent(e.Clone());
+            queueEvent(e);
         }
     }
 
-    wxThreadEvent e(wxhEVT_THREAD_COMPLETED);
-    e.SetId(getID());
-    evtHandler->QueueEvent(e.Clone());
+    queueDefaultCompletedEvent();
 
-    return (wxThread::ExitCode)0;
+    /* alternative queueing procedure:
+
+    wxThreadEvent e(wxhEVT_THREAD_COMPLETED);
+    e.SetId(getThreadID());
+    evtHandler->QueueEvent(e.Clone());
+    */
+
+    return 0;
 }

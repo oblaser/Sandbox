@@ -1,7 +1,7 @@
 /*
 
 \author         Oliver Blaser
-\date           01.07.2021
+\date           04.07.2021
 \copyright      GNU GPLv3 - Copyright (c) 2021 Oliver Blaser
 
 */
@@ -15,25 +15,23 @@ app::ThreadC::ThreadC(wxh::ThreadHost* parentThHost)
 {
 }
 
-wxThread::ExitCode app::ThreadC::Entry()
+int app::ThreadC::doWork()
 {
     int cnt = 0;
     while (!TestDestroy() && (cnt < 5))
     {
         wxThread::This()->Sleep(2000);
 
-        wxThreadEvent e(cEVT_MYTHREADC_UPDATE);
-        e.SetId(getID());
-        evtHandler->QueueEvent(e.Clone());
+        queueDefaultEvent(cEVT_MYTHREADC_UPDATE);
 
         ++cnt;
     }
 
-    wxThreadEvent e(cEVT_MYTHREADC_COMPLETED);
-    e.SetId(getID());
-    evtHandler->QueueEvent(e.Clone());
+    wxThreadEvent e = getDefaultEvent(cEVT_MYTHREADC_COMPLETED);
+    e.SetPayload<std::string>("some thread completed data.");
+    queueEvent(e);
 
-    return (wxThread::ExitCode)0;
+    return 0;
 }
 
 

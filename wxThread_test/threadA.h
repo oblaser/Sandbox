@@ -1,7 +1,7 @@
 /*
 
 \author         Oliver Blaser
-\date           01.07.2021
+\date           04.07.2021
 \copyright      GNU GPLv3 - Copyright (c) 2021 Oliver Blaser
 
 */
@@ -21,7 +21,7 @@ namespace app
         virtual ~ThreadA() {}
 
     protected:
-        wxThread::ExitCode Entry() override;
+        int doWork() override;
     };
 }
 

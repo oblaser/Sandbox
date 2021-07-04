@@ -111,7 +111,7 @@ void frames::Main::btn_startA_click(wxCommandEvent& e)
 
     if (threadA->Run() == wxTHREAD_NO_ERROR)
     {
-        threadA->setID(registerThread(threadA));
+        threadA->setThreadId(registerThread(threadA));
     }
     else
     {
@@ -122,7 +122,7 @@ void frames::Main::btn_startA_click(wxCommandEvent& e)
 
 void frames::Main::btn_terminateA_click(wxCommandEvent& e)
 {
-    if (threadA) threadA->Delete();
+    if(threadA) threadA->Delete();
 }
 
 void frames::Main::btn_startB_click(wxCommandEvent& e)
@@ -132,7 +132,7 @@ void frames::Main::btn_startB_click(wxCommandEvent& e)
 
     if (threadB->Run() == wxTHREAD_NO_ERROR)
     {
-        threadB->setID(registerThread(threadB));
+        threadB->setThreadId(registerThread(threadB));
     }
     else
     {
@@ -143,7 +143,7 @@ void frames::Main::btn_startB_click(wxCommandEvent& e)
 
 void frames::Main::btn_terminateB_click(wxCommandEvent& e)
 {
-    if (threadB) threadB->Delete();
+    if(threadB) threadB->Delete();
 }
 
 void frames::Main::btn_startC_click(wxCommandEvent& e)
@@ -153,7 +153,7 @@ void frames::Main::btn_startC_click(wxCommandEvent& e)
 
     if (threadC->Run() == wxTHREAD_NO_ERROR)
     {
-        threadC->setID(registerThread(threadC));
+        threadC->setThreadId(registerThread(threadC));
     }
     else
     {
@@ -169,19 +169,27 @@ void frames::Main::btn_terminateC_click(wxCommandEvent& e)
 
 void frames::Main::th_completed(wxThreadEvent& e)
 {
-    const int idA = (threadA ? threadA->getID() : -1);
-    const int idB = (threadB ? threadB->getID() : -1);
+    const int idA = (threadA ? threadA->getThreadID() : -1);
+    const int idB = (threadB ? threadB->getThreadID() : -1);
 
-    if (e.GetId() == idA) log("A completed");
-    else if (e.GetId() == idB) log("B completed");
+    if (e.GetId() == idA)
+    {
+        log("A completed");
+        threadA = nullptr;
+    }
+    else if (e.GetId() == idB)
+    {
+        log("B completed");
+        threadB = nullptr;
+    }
     else log("thread " + std::to_string(e.GetId()) + " completed");
     e.Skip();
 }
 
 void frames::Main::th_update(wxThreadEvent& e)
 {
-    const int idA = (threadA ? threadA->getID() : -1);
-    const int idB = (threadB ? threadB->getID() : -1);
+    const int idA = (threadA ? threadA->getThreadID() : -1);
+    const int idB = (threadB ? threadB->getThreadID() : -1);
 
     if (e.GetId() == idA) log("A update: " + std::to_string(e.GetPayload<int>()));
     else if (e.GetId() == idB) log("B update: " + e.GetPayload<std::string>());
@@ -192,6 +200,7 @@ void frames::Main::th_update(wxThreadEvent& e)
 void frames::Main::thC_completed(wxThreadEvent& e)
 {
     log("C(" + std::to_string(e.GetId()) + ") completed");
+    threadC = nullptr;
     e.Skip();
 }
 

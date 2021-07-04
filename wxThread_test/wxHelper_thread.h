@@ -1,7 +1,7 @@
 /*
 
 \author         Oliver Blaser
-\date           01.07.2021
+\date           04.07.2021
 \copyright      GNU GPLv3 - Copyright (c) 2021 Oliver Blaser
 
 */
@@ -25,7 +25,7 @@ namespace wxh
         ThreadHost();
         virtual ~ThreadHost();
 
-        const wxh::Thread** const getThreadPtr(int id);
+        const wxh::Thread** /*const - does not do anything here */ getThreadPtr(int id);
         wxCriticalSection* getThreadCSPtr(int id);
         virtual wxEvtHandler* getEventHandler() = 0;
 
@@ -59,22 +59,40 @@ namespace wxh
     class Thread : public wxThread
     {
     public:
+        Thread(const Thread&) = delete;
         Thread(wxh::ThreadHost* parentThHost);
         virtual ~Thread();
 
-        int getID() const;
-        void setID(int id);
+        int getThreadID();
+        void setThreadId(int id);
 
         wxCriticalSection* getThreadCSPtr();
+
+        //! @brief The actual working method.
+        //! @return Status
+        //! 
+        //! If 0 is returned, the Entry() function exits directly.
+        //! If 1 is returned, queueDefaultCompletedEvent() is called before exiting Entry().
+        virtual int doWork() = 0;
 
     protected:
         wxEvtHandler* const evtHandler;
         wxh::ThreadHost* const parent;
 
-    private:
-        Thread(const Thread&);
+        wxThreadEvent getDefaultEvent(wxEventType eventType) const;
+        wxThreadEvent getDefaultCompletedEvent() const;
+        wxThreadEvent getDefaultUpdateEvent() const;
 
+        void queueEvent(const wxThreadEvent& e);
+        void queueDefaultEvent(wxEventType eventType);
+        void queueDefaultCompletedEvent();
+        void queueDefaultUpdateEvent();
+
+    private:
         int id;
+        int idMirror; // for internal use. To not try to reenter a CS (read/write id requires a CS), wich would be a self locking condition.
+
+        wxThread::ExitCode Entry() override;
     };
 
     class CSLocker
@@ -104,7 +122,9 @@ namespace wxh
                 thread->getThreadCSPtr()->Leave();
                 host->csLeave();
             }
+#ifdef _DEBUG
             else throw std::runtime_error("invalid wxh::CSLocker object");
+#endif
         }
 
     private:
