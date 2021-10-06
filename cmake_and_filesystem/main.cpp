@@ -49,7 +49,8 @@ int main(int argc, char** argv)
                 {
                     cout << setw(maxStrLen + 2) << sv[i];
 
-                    std::filesystem::directory_entry de(std::filesystem::path(sv[i]));
+                    auto tmpSvElem = sv[i];
+                    std::filesystem::directory_entry de = std::filesystem::directory_entry(std::filesystem::path(tmpSvElem));
 
                     if(de.is_block_file()) cout << " is_block_file";
                     if(de.is_character_file()) cout << " is_character_file";
@@ -111,7 +112,11 @@ int main(int argc, char** argv)
 
 static void printArgs(int argc, char** argv)
 {
+#if (defined(_WIN32) || defined(_WIN64))
+    for (int i = 0; i < argc; ++i)
+#else
     for(int i = 0; i <= 100; ++i)
+#endif
     {
         if(i == argc) cout << "following with illegal access to environment vars:" << endl;
 
@@ -119,7 +124,7 @@ static void printArgs(int argc, char** argv)
 
         if(i == argc)
         {
-            cout << "error: core dumped";
+            cout << "#error: core dumped";
         }
         else
         {

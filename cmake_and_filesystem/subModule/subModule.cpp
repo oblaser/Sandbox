@@ -24,7 +24,7 @@ std::vector<std::string> subModule::getDirEntries(std::string& dir)
 
     for(const auto& entry: fs::directory_iterator(dir))
     {
-        r.push_back(entry.path().lexically_normal());
+        r.push_back(entry.path().lexically_normal().u8string());
     }
 
     return r;
