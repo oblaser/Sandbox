@@ -75,7 +75,7 @@ int main()
 
     println("\n");
 
-#if(PRJ_WIN32 || PRJ_LINUX_ARM) // windows sadly does not have a UTF8 console, or I just didn't figure it out
+#if(PRJ_WIN32 || PRJ_LINUX_ARM) // windows sadly does not have a UTF8 console, or I just didn't figure it out (EDIT: see https://github.com/oblaser/omw)
     char block[] = "#";
 #else
     char block[] = { (char)0xE2, (char)0x96, (char)0x84, (char)0x00 };
