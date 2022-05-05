@@ -1,5 +1,9 @@
 # cliTextFormat
 
+> Some information in this directory is obsolete or wrong.
+> This sandbox project is now released as a [system test for OMW](https://github.com/oblaser/omw/tree/master/tests/system/omw-test_cli)
+> in an more C++ likely manner (ostream manipulators).
+
 A little crossplatform library to format the text on stdout, based on the [SGR parameters](https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters) of the ANSI escape codes (on Windows I had to use the proprietary Console API).
 
 ## Build
