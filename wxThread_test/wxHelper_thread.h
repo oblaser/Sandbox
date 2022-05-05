@@ -52,7 +52,7 @@ namespace wxh
 
         std::vector<wxh::ThreadHost::ThreadObject> thread;
 
-        wxCriticalSection csAllocate; // to avoid dangeling pointers to not anymore allocated memory of this->thread. So that an allocation can only happen, if no cs in any ThreadObject is used ad the moment.
+        wxCriticalSection csAllocate; // to avoid dangeling pointers to not anymore allocated memory of this->thread. So that an allocation can only happen, if no cs in any ThreadObject is used at the moment.
         size_t csAllocateLayer;
     };
 
